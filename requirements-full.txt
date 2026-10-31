@@ -1,0 +1,5 @@
+# Optional heavy extras for a strong laptop (NOT for Streamlit Cloud): local NLI model + EasyOCR
+-r requirements.txt
+transformers
+torch
+easyocr

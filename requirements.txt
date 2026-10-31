@@ -1,0 +1,13 @@
+streamlit
+pandas
+plotly
+requests
+pillow
+joblib
+numpy
+scikit-learn==1.9.1
+beautifulsoup4
+ddgs
+starlette
+uvicorn
+python-dotenv

@@ -1,0 +1,17 @@
+# secrets
+.env
+.streamlit/secrets.toml
+firmware/**/config.h
+# databases and private data
+*.db
+*.db-wal
+*.db-shm
+*.sqlite3
+private_uploads/
+reports_generated/
+# python
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/

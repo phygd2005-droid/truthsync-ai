@@ -1,0 +1,70 @@
+"""Look and feel: CSS and small HTML helpers."""
+import html
+
+VERDICT_COLORS = {
+    "LIKELY FAKE": "#ef4444",
+    "LIKELY REAL": "#22c55e",
+    "UNVERIFIED": "#f59e0b",
+    "INSUFFICIENT INFORMATION": "#64748b",
+    "TEST": "#38bdf8",
+}
+
+CSS = """
+<style>
+.stApp { background: radial-gradient(1200px 600px at 10% -10%, #10203f 0%, #0b1220 55%); }
+[data-testid="stSidebar"] { background: #0a1020; border-right: 1px solid #1c2a47; }
+h1, h2, h3 { letter-spacing: -0.01em; }
+.ts-brand { font-size: 1.35rem; font-weight: 800; color: #e6edf7; margin-bottom: 0; }
+.ts-brand span { color: #22d3ee; }
+.ts-tag { color: #7d8db0; font-size: .8rem; margin-bottom: 1rem; }
+.ts-card { background: linear-gradient(180deg,#111b2e,#0e1728); border: 1px solid #1f3152;
+           border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; }
+.ts-metric { background: linear-gradient(180deg,#111b2e,#0e1728); border: 1px solid #1f3152;
+             border-radius: 14px; padding: 14px 16px; }
+.ts-metric .v { font-size: 1.8rem; font-weight: 800; color: #e6edf7; line-height: 1.1; }
+.ts-metric .l { font-size: .75rem; color: #7d8db0; text-transform: uppercase; letter-spacing: .06em; }
+.ts-badge { display: inline-block; padding: 4px 12px; border-radius: 999px; font-weight: 700;
+            font-size: .85rem; letter-spacing: .04em; border: 1px solid; }
+.ts-dot { display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:6px; }
+.ts-muted { color: #7d8db0; font-size: .85rem; }
+.ts-note { border-left: 3px solid #22d3ee; padding: 6px 12px; background:#0e1a30;
+           border-radius: 0 8px 8px 0; color:#b8c5e0; font-size:.88rem; margin: 6px 0; }
+div.stButton > button { border-radius: 10px; border: 1px solid #2a4170; }
+div.stButton > button[kind="primary"] { background: linear-gradient(90deg,#0ea5e9,#22d3ee);
+            color: #04121f; border: 0; font-weight: 700; }
+@media (max-width: 640px) { .ts-metric .v { font-size: 1.4rem; } }
+</style>
+"""
+
+
+def esc(s):
+    return html.escape(str(s if s is not None else ""))
+
+
+def badge(verdict):
+    col = VERDICT_COLORS.get(verdict, "#64748b")
+    return (f'<span class="ts-badge" style="color:{col};border-color:{col};'
+            f'background:{col}1f">{esc(verdict)}</span>')
+
+
+def metric(label, value):
+    return f'<div class="ts-metric"><div class="l">{esc(label)}</div><div class="v">{esc(value)}</div></div>'
+
+
+def status_dot(online):
+    col = "#22c55e" if online else "#64748b"
+    return f'<span class="ts-dot" style="background:{col}"></span>' + ("Online" if online else "Offline")
+
+
+def md_link(title, url):
+    t = (title or url or "source").replace("[", "(").replace("]", ")").replace("\n", " ")[:110]
+    safe = (url or "").replace(" ", "%20").replace(")", "%29")
+    if not safe.lower().startswith(("http://", "https://")):
+        return t
+    return f"[{t}]({safe})"
+
+
+def csv_safe(v):
+    """Prevents spreadsheet formula injection in CSV exports."""
+    s = "" if v is None else str(v)
+    return "'" + s if s[:1] in ("=", "+", "-", "@", "\t", "\r") else s
